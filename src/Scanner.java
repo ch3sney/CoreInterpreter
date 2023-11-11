@@ -5,7 +5,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 
-public class CoreScanner {
+public class Scanner {
     /*
      * Private members --------------------------------------------------------
      */
@@ -216,7 +216,7 @@ public class CoreScanner {
     /*
      * Constructors -----------------------------------------------------------
      */
-    public CoreScanner(String file) throws IOException {
+    public Scanner(String file) throws IOException {
         // Instantiate buffered reader
         reader = new BufferedReader(new FileReader(file));
 

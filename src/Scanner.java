@@ -1,277 +1,301 @@
 import java.io.BufferedReader;
+import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
+import java.util.Arrays;
+import java.util.List;
 
-public class Scanner {
+//Define a class named CoreScanner to tokenize a file into a list of tokens based on CORE language
+class Scanner {
+    //List to hold the tokens extracted from the file
+    public List<Token> tokens;
+    private BufferedReader reader;
+    //String to hold the current line being processed
+    private String currentLine = "";
+    //Cursor index to move from one token to another
+    private int cursorIndex;
+
+    //List of reserved words for tokenizing
+    private static final List<String> reservedWords = Arrays.asList("program", "begin", "end", "int", "if", "then", "else", "while", "loop", "read", "write");
+
+    //Used in tokenizeLine for checking whether the character is an Upper case letter
+    private static boolean isUpperCase(char c) {
+        return "ABCDEFGHIJKLMNOPQRSTUVWXYZ".contains(String.valueOf(c));
+    }
+
     /*
-     * Private members --------------------------------------------------------
-     */
+    Constructor to initialize the CoreScanner with a file name and tokenize the first line
+    */
+    Scanner(String fileName) throws IOException {
+        try {
+            reader = new BufferedReader(new FileReader(fileName));
+            //Initialize the list to contain tokens
+            tokens = new ArrayList<>();
+        } catch (FileNotFoundException e) {
+            System.out.println("Error: File not Found");
+            System.exit(1);
+        }
+        //First call to tokenizeLine to start tokenizing the file
+        tokenizeLine();
+    }
 
-    // BufferedReader for reading from file
-    private final BufferedReader reader;
+    //Define a class named Token to represent a token in CORE.
+    class Token {
+        //Integer to represent the type of the token
+        int type;
+        //String to represent the content of the token
+        String content;
 
-    // Represent tokens and corresponding strings
-    public final ArrayList<Integer> tokens;
-    private final ArrayList<String> tokenStrings;
-
-    // Current token index
-    private int index;
-
-    // Store special symbols and mappings between keywords and token code
-    private final HashSet<String> specialSymbols;
-    private final HashMap<String, Integer> codeMappings;
+        //Constructor to initialize the Token object with a type and a content.
+        Token(int type, String content) {
+            this.type = type;
+            this.content = content;
+        }
+    }
 
     /*
-     * Tokenizes a single line in provided file.
-     */
-    private void tokenizeLine(BufferedReader reader) throws IOException {
-        // Store initial size of array.
-        int initialSize = tokens.size();
+    Method that reads a line from the input file and converts the sequence of characters in that line into a
+    sequence of Core tokens and save them in the tokens array
+    */
+    public void tokenizeLine() throws IOException {
+        //Cursor to keep track of remaing tokens in a line
+        int cursor = 0;
+        //Read in first line
+        currentLine = reader.readLine();
 
-        // Continue reading lines until non-empty or null found
-        String currLine = reader.readLine();
-        while (currLine != null && currLine.trim().isEmpty()) {
-            currLine = reader.readLine();
+        //Skip blank lines
+        while (currentLine != null && currentLine.trim().isEmpty()) {
+            currentLine = reader.readLine();
         }
+        //EOF has been reached
+        if (currentLine == null) {
+            //Set last token as "EOF" with appropriate type
+            tokens.add(new Token(33, "EOF"));
+        } else {
+            //Integer to keep track of the length of current line
+            int lineLength = currentLine.length();
+            //Go through each line adding each token till there are none left
+            while (cursor < lineLength) {
+                //Character in line based on cursor value
+                char currentChar = currentLine.charAt(cursor);
+                //Integer to determine last "character" position in token
+                int endIndex = cursor + 1;
+                //Skip all white space
+                if (Character.isWhitespace(currentChar)) {
+                    cursor++;
+                    //Case for Identifiers
+                } else if (isUpperCase(currentChar)) {
+                    //Go through adding all legal "characters" that make up an identifier
+                    while (endIndex < lineLength && (Character.isUpperCase(currentLine.charAt(endIndex)) || Character.isDigit(currentLine.charAt(endIndex)))) {
+                        endIndex++;
+                    }
+                    //String to hold identifier
+                    String identifier = currentLine.substring(cursor, endIndex);
+                    //Add identifier to the token array
+                    tokens.add(new Token(32, identifier));
+                    //Set cursor to point to next "character" position to be tokenized
+                    cursor = endIndex;
+                    //Case for Special symbols
+                } else if (isSpecialSymbol(currentChar)) {
+                    //Keep track of next character for greedy tokenizing
+                    char nextChar = (cursor != lineLength - 1) ? currentLine.charAt(endIndex) : 0;
+                    //String to hold symbol
+                    String symbol;
+                    //Go through each "special" cases for symbols
+                    switch (currentChar) {
+                        case '=':
+                            //Case for when toke is "=="
+                            if (nextChar == '=') {
+                                symbol = currentLine.substring(cursor, endIndex + 1);
+                                //Increase endIndex to next character
+                                endIndex++;
+                                //Case for when token is "="
+                            } else {
+                                symbol = currentLine.substring(cursor, endIndex);
+                            }
+                            //Add symbol to the token array
+                            tokens.add(new Token(getSpecialSymbolType(symbol), symbol));
+                            break;
 
-        // If line is null, add EOS token and return
-        if (currLine == null) {
-            tokens.add(33);
-            tokenStrings.add("eos");
-            return;
-        }
+                        case '!':
+                        case '<':
+                        case '>':
+                            //Case for when token is "!=" or "<=" or ">="
+                            if (nextChar == '=') {
+                                symbol = currentLine.substring(cursor, endIndex + 1);
+                                endIndex++;
+                                //Case for when token is "!" or "<" or ">"
+                            } else {
+                                symbol = currentLine.substring(cursor, endIndex);
+                            }
+                            //Add symbol to the token array
+                            tokens.add(new Token(getSpecialSymbolType(symbol), symbol));
+                            break;
 
-        // "Normalize spacing" of line. Adds spaces between special symbols and to end of line.
-        currLine = normalizeSpacing(currLine);
-
-        int position = 0;
-        while (position < currLine.length()) {
-            // Extract a single token or white-space
-            String tokenOrSpaces = nextTokenOrSpaces(currLine, position);
-
-            // If tokenOrSpaces is not empty (is token candidate) continue...
-            if (!tokenOrSpaces.trim().isEmpty()) {
-                // Get corresponding token code
-                int tokenCode = getTokenCode(tokenOrSpaces);
-
-                // Check if token is a token (not an error)
-                if (tokenCode != 34) {
-                    tokenStrings.add(tokenOrSpaces);
-                    tokens.add(tokenCode);
+                        default:
+                            //Case for all other symbols
+                            symbol = currentLine.substring(cursor, endIndex);
+                            //Add symbol to the token array
+                            tokens.add(new Token(getSpecialSymbolType(symbol), symbol));
+                            break;
+                    }
+                    //Set cursor to point to next "character" position to be tokenized
+                    cursor = endIndex;
+                    //Case for integers
+                } else if (Character.isDigit(currentChar)) {
+                    //Go through adding all legal "characters" that make up an identifier
+                    while (endIndex < lineLength && Character.isDigit(currentLine.charAt(endIndex))) {
+                        endIndex++;
+                    }
+                    //String to hold integer
+                    String integer = currentLine.substring(cursor, endIndex);
+                    //Add integer to token array
+                    tokens.add(new Token(31, integer));
+                    //Set cursor to point to next "character" position to be tokenized
+                    cursor = endIndex;
+                    //Case for reserved words or illegal token
                 } else {
-                    // Break if error is found
-                    tokenStrings.add("error");
-                    tokens.add(34);
-                    break;
+                    //Go through adding all legal "characters" that make up an identifier
+                    while (endIndex < lineLength && Character.isLetterOrDigit(currentLine.charAt(endIndex))) {
+                        endIndex++;
+                    }
+                    //String to hold reserved word
+                    String reservedWord = currentLine.substring(cursor, endIndex);
+                    //Checks to make sure string is a reserved word
+                    if (reservedWords.contains(reservedWord)) {
+                        //Add reserved word to token array
+                        tokens.add(new Token(reservedWords.indexOf(reservedWord) + 1, reservedWord));
+                        //Case for illegal token
+                    } else {
+                        //Add illegal token to token array
+                        tokens.add(new Token(34, reservedWord));
+                    }
+                    //Set cursor to point to next "character" position to be tokenized
+                    cursor = endIndex;
                 }
             }
-            position += tokenOrSpaces.length();
-        }
-        // Combine tokens greedily
-        greedifyLine(initialSize);
-    }
-
-    /*
-     * Populates set with symbols in given file.
-     */
-    private void populateList(HashSet<String> s, String filePath) throws IOException {
-        // Initialize reader
-        BufferedReader listReader = new BufferedReader(new FileReader(filePath));
-
-        String currLine = listReader.readLine();
-        while (currLine != null) {
-            // Add symbol to set
-            s.add(currLine);
-            currLine = listReader.readLine();
-        }
-        listReader.close();
-    }
-
-    /*
-     * Populates map with symbols and corresponding codes.
-     */
-    private void populateMap(HashMap<String, Integer> m, String filePath) throws IOException {
-        // Initialize reader
-        BufferedReader mapReader = new BufferedReader(new FileReader(filePath));
-
-        String currLine = mapReader.readLine();
-        while (currLine != null) {
-            // Add symbol and corresponding code to map
-            String[] split = currLine.split(" ");
-            m.put(split[0], Integer.valueOf(split[1]));
-            currLine = mapReader.readLine();
-        }
-
-    }
-
-    /*
-     * Greedily combine adjacent tokens. Somewhat of a hardcoded approach IMO.
-     */
-    private void greedifyLine(int lineIndex) {
-        // Iterate from starting index to end of array
-        int i = lineIndex;
-
-        while (i < tokens.size() - 1) {
-            // Get adjacent tokens
-            int token = tokens.get(i);
-            int nextToken = tokens.get(i + 1);
-
-            // Combine adjacent tokens which match criteria
-            if (token == 15 && nextToken == 14) {
-                greedySwap(i, 25, "!=");
-            } else if (token == 14 && nextToken == 14) {
-                greedySwap(i, 26, "!=");
-            } else if (token == 27 && nextToken == 14) {
-                greedySwap(i, 29, "<=");
-            } else if (token == 28 && nextToken == 14) {
-                greedySwap(i, 30, ">=");
-            } else {
-                i++;
-            }
         }
     }
 
     /*
-     * Remove two symbols and replace with single greedy token
-     */
-    private void greedySwap(int index, int code, String str) {
-        // Update tokenStrings
-        tokenStrings.remove(index + 1);
-        tokenStrings.remove(index);
-        tokenStrings.add(index, str);
-
-        // Update tokens
-        tokens.remove(index + 1);
-        tokens.remove(index);
-        tokens.add(index, code);
-    }
-
-    /*
-     * Given string, return token code
-     */
-    private int getTokenCode(String token) {
-        if (codeMappings.containsKey(token)) {
-            // Is a mapped token
-            return codeMappings.get(token);
-        } else if (isInteger(token)) {
-            // Is an integer
-            return 31;
-        } else if (isIdentifier(token)) {
-            // Is an identifier
-            return 32;
-        } else {
-            // Error!
-            return 34;
-        }
-    }
-
-    /*
-     * Test if given string is integer (how is this not a string method already?!)
-     */
-    private boolean isInteger(String str) {
-        try {
-            Integer.parseInt(str);
-            return true;
-        } catch (NumberFormatException e) {
-            return false;
-        }
-    }
-
-    /*
-     * Test if given string matches criteria to be an identifier
-     */
-    private boolean isIdentifier(String str) {
-        return Character.isLetter(str.charAt(0)) && str.matches("^[A-Z0-9]*$");
-    }
-
-    /*
-     * Add spaces between special symbols and to end of line
-     */
-    private String normalizeSpacing(String line) {
-        for (String curr : specialSymbols) {
-            // Add spaces between special symbols
-            line = line.replace(curr, " " + curr + " ");
-        }
-
-        // Add space to end of line
-        return line + " ";
-    }
-
-    /*
-     * Returns next token or white space
-     */
-    private String nextTokenOrSpaces(String line, int position) {
-        int i = position;
-        boolean isSpace = line.charAt(i) == ' ' || line.charAt(i) == '\t';
-        while (i < line.length() &&
-                isSpace == (line.charAt(i) == ' ' || line.charAt(i) == '\t')) {
-            i++;
-        }
-        return line.substring(position, i);
-    }
-
-    /*
-     * Constructors -----------------------------------------------------------
-     */
-    public Scanner(String file) throws IOException {
-        // Instantiate buffered reader
-        reader = new BufferedReader(new FileReader(file));
-
-        // Initialize tokens and index
-        tokens = new ArrayList<Integer>();
-        tokenStrings = new ArrayList<String>();
-        index = 0;
-
-        // Initialize specialSymbols
-        specialSymbols = new HashSet<String>();
-        populateList(specialSymbols, "data/specialSymbols.txt");
-
-        // Initialize codeMappings
-        codeMappings = new HashMap<String, Integer>();
-        populateMap(codeMappings, "data/codeMappings.txt");
-
-        // Continually call tokenizeLine until it returns -1 (reaches EOS)
-        tokenizeLine(reader);
-
-        // Set index to 0
-        index = 0;
-    }
-
-
-    /*
-     * Kernel methods ---------------------------------------------------------
-     */
+    Method to return the type of token as number from 1-34
+    */
     public int getToken() {
-        // Return current token
-        return tokens.get(index);
+        //Get the token at the current cursor index from the list of tokens
+        Token token = tokens.get(cursorIndex);
+        return token.type;
     }
 
+    /*
+    Method to return the content of token as a string
+    */
+    public String getContent() {
+        //Get the token at the current cursor index from the list of tokens
+        Token token = tokens.get(cursorIndex);
+        return token.content;
+    }
+
+    /*
+    Method to move the token cursor to the next token
+    */
     public void skipToken() throws IOException {
-        // If at end of current line and token is not 33 or 34, tokenize a new line
-        if (index == tokens.size() - 1 && tokens.get(index) != 33 && tokens.get(index) != 34) {
-            tokenizeLine(reader);
-        }
-
-        // If token is not 33 or 34, increase index
-        if (tokens.get(index) != 33 && tokens.get(index) != 34) {
-            index++;
+        //Move cursor to next token if there are still tokens in the token array
+        if (cursorIndex < tokens.size() - 1) {
+            cursorIndex++;
+            //If cursor token is at last token in array and token type is not EOF or Illegal, tokenize next line.
+        } else if (getToken() != 33 && getToken() != 34) {
+            tokenizeLine();
+            cursorIndex++;
         }
     }
 
+    /*
+    Method to get the value of the current integer token
+    */
     public int intVal() {
-        assert tokens.get(index) == 31 : "Violation of: current token is integer";
-
-        // Return int value
-        return Integer.parseInt(tokenStrings.get(index));
+        //Check if token is an integer
+        if (getToken() == 31) {
+            //String to hold the content of that integer
+            String integer = tokens.get(cursorIndex).content;
+            //Return the integer value of the string
+            return Integer.parseInt(integer);
+            //If token is not an integer print error message
+        } else {
+            System.err.println("Error: Current token is not an integer.");
+            System.exit(1);
+            return -1; //This line will never be reached, added for compilation
+        }
     }
 
+    /*
+    Method to get the content of the current identifier token
+    */
     public String idName() {
-        assert tokens.get(index) == 32 : "Violation of: current token is identifier";
+        //Check if token is a string
+        if (getToken() == 32) {
+            //Return the name of identifier as string
+            return tokens.get(cursorIndex).content;
+            //If token is not an identifier print error message
+        } else {
+            System.err.println("Error: Current token is not an identifier.");
+            System.exit(1);
+            return null; //This line will never be reached, added for compilation
+        }
+    }
 
-        // Return identifier value
-        return tokenStrings.get(index);
+    /*
+    Method used in tokenizeLine for checking if character is a valid special symbol
+    */
+    private boolean isSpecialSymbol(char character) {
+        return ";,=![]&&||()+-*!===<><=>=".indexOf(character) != -1;
+    }
+
+    /*
+    Method used in tokenizeLine to obtain the token type value of special symbol
+    */
+    private int getSpecialSymbolType(String symbol) {
+        switch (symbol) {
+            case ";":
+                return 12;
+            case ",":
+                return 13;
+            case "=":
+                return 14;
+            case "!":
+                return 15;
+            case "[":
+                return 16;
+            case "]":
+                return 17;
+            case "&&":
+                return 18;
+            case "||":
+                return 19;
+            case "(":
+                return 20;
+            case ")":
+                return 21;
+            case "+":
+                return 22;
+            case "-":
+                return 23;
+            case "*":
+                return 24;
+            case "!=":
+                return 25;
+            case "==":
+                return 26;
+            case "<":
+                return 27;
+            case ">":
+                return 28;
+            case "<=":
+                return 29;
+            case ">=":
+                return 30;
+            default:
+                return -1; //Invalid special symbol
+        }
     }
 }

@@ -1,7 +1,7 @@
-public class Digit {
+public class Letter {
     private String val;
 
-    public Digit() {
+    public Letter() {
     }
 
     public void parse(String val) {

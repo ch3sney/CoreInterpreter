@@ -1,0 +1,20 @@
+PROJECT DESIGN:
+I opted to use the object-oriented approach for my interpreter, creating a different class for every item in the BNF.
+This made design relatively simple, and made recursive descent simple as well. Other than that, I went pretty standard
+with the design, following how the professor recommended we design our classes. The only "quirky" thing I did was how I
+checked that IDs were properly declared/initialized. I did this by creating a separate data structure to store the ID
+along with its 'status', such as if it is declared, or initialized.
+
+TESTING:
+I tested my Interpreter by slowly increasing the complexity of the programs I fed into it. This made it easier to
+pinpoint where my issues were. Despite this, debugging was still pretty challenging and required lots of strategic print
+statement to further pinpoint trouble areas.
+
+Once I had built up to a fully functional Interpreter. I further tested it by using the professor provided programs. I
+would also make small changes and syntax errors to see if my program appropriately responded.
+
+KNOWN BUGS:
+- None that I know of... I could imagine something with my ID logic is a little off, but I was unable to break it before
+  submission :P
+
+Thanks for reading!

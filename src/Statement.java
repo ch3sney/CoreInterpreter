@@ -20,11 +20,11 @@ public class Statement {
                 loop = new Loop();
                 loop.parse();
                 break;
-            case (9):
+            case (10):
                 in = new In();
                 in.parse();
                 break;
-            case (10):
+            case (11):
                 out = new Out();
                 out.parse();
                 break;

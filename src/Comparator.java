@@ -8,6 +8,9 @@ public class Comparator {
     }
 
     public void parse() {
+        if (Interpreter.tok.getToken() == 20) {
+            Interpreter.tok.skipToken();
+        }
         this.left = new Op();
         left.parse();
 
@@ -36,13 +39,19 @@ public class Comparator {
         }
         Interpreter.tok.skipToken();
 
+
         this.right = new Op();
         right.parse();
+
+        if (Interpreter.tok.getToken() == 21) {
+            Interpreter.tok.skipToken();
+        }
+
     }
 
     public void print() {
         left.print();
-        System.out.print(compOp);
+        System.out.print(" " + compOp + " ");
         right.print();
     }
 

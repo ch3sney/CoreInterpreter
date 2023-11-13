@@ -21,6 +21,7 @@ public class Assign {
     }
 
     public void print() {
+        Interpreter.tok.printTabs();
         id.print();
         System.out.print(" = ");
         exp.print();

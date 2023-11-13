@@ -1,7 +1,5 @@
 public class Identifier {
     private Identifier id;
-    private Letter letter;
-    private Digit digit;
     private String name;
 
     public Identifier() {
@@ -9,7 +7,6 @@ public class Identifier {
 
     public void parse(String idString) {
         name = idString;
-        //Interpreter.tok.skipToken();
     }
 
     public void print() {
@@ -35,7 +32,6 @@ public class Identifier {
 
     public Integer getValue() {
         if (Interpreter.tok.hasId(this.name) && Interpreter.tok.getIdValue(this.name) != null) {
-            System.out.print("getVal");
             return Interpreter.tok.getIdValue(name);
         } else {
             System.err.println("Error: Identifier value not initialized or does not exist.");

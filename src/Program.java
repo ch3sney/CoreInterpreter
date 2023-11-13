@@ -9,6 +9,7 @@ public class Program {
         if (Interpreter.tok.getToken() == 1) {
             Interpreter.tok.skipToken();
         }
+
         decSeq = new DeclarationSeq();
         decSeq.parse();
 
@@ -24,10 +25,15 @@ public class Program {
     }
 
     public void print() {
+
         System.out.println("program");
+        Interpreter.tok.increaseTab();
         decSeq.print();
+        Interpreter.tok.decreaseTab();
         System.out.println("begin");
+        Interpreter.tok.increaseTab();
         stmtSeq.print();
+        Interpreter.tok.decreaseTab();
         System.out.println("end");
     }
 

@@ -21,6 +21,7 @@ public class DeclarationSeq {
     }
 
     public void print() {
+        Interpreter.tok.printTabs();
         dec.print();
         if (decSeq != null) {
             decSeq.print();

@@ -5,16 +5,13 @@ public class Op {
 
     public void parse() {
         if (Interpreter.tok.getToken() == 31) {
-            System.out.println("int");
             this.dig = Interpreter.tok.intVal();
             Interpreter.tok.skipToken();
         } else if (Interpreter.tok.getToken() == 32) {
-            System.out.println("id");
             this.id = new Identifier();
             id.parse(Interpreter.tok.idName());
             Interpreter.tok.skipToken();
         } else if (Interpreter.tok.getToken() == 20) {
-            System.out.println("exp");
             Interpreter.tok.skipToken();
             this.exp = new Expression();
             exp.parse();

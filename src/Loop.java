@@ -7,7 +7,6 @@ public class Loop {
     }
 
     public void parse() {
-        System.out.println("parse while");
         if (Interpreter.tok.getToken() == 8) {
             Interpreter.tok.skipToken();
         }
@@ -20,7 +19,6 @@ public class Loop {
 
         ss = new StatementSeq();
         ss.parse();
-        System.out.print("parse ss");
 
         if (Interpreter.tok.getToken() == 3) {
             Interpreter.tok.skipToken();
@@ -32,11 +30,15 @@ public class Loop {
     }
 
     public void print() {
-        System.out.print("while ");
+        Interpreter.tok.printTabs();
+        System.out.print("while (");
         cond.print();
-        System.out.print(" loop ");
+        System.out.print(") loop\n");
+        Interpreter.tok.increaseTab();
         ss.print();
-        System.out.print(" end;");
+        Interpreter.tok.decreaseTab();
+        Interpreter.tok.printTabs();
+        System.out.print("end;\n");
     }
 
     public void execute() {

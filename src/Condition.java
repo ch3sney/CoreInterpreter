@@ -16,6 +16,7 @@ public class Condition {
             left = new Condition();
             left.parse();
         } else if (Interpreter.tok.getToken() == 16) {
+
             Interpreter.tok.skipToken();
             left = new Condition();
             left.parse();

@@ -18,7 +18,7 @@ public class Declaration {
     }
 
     public void print() {
-        System.out.print("int");
+        System.out.print("int ");
         idList.print();
         System.out.print(";\n");
     }

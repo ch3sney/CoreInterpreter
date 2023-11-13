@@ -12,6 +12,7 @@ public class Tokenizer {
     private Scanner scanner;
     private HashMap<String, Integer> idMap;
     private Queue<Integer> dataQueue;
+    private int tab = 0;
 
     private void readData(String dataPath) {
         dataQueue = new LinkedList<>();
@@ -33,6 +34,7 @@ public class Tokenizer {
     public Tokenizer(String codePath, String dataPath) throws IOException {
         readData(dataPath);
         scanner = new Scanner(codePath);
+        idMap = new HashMap<>();
     }
 
     public int intVal() {
@@ -91,5 +93,18 @@ public class Tokenizer {
         return token == scanner.getToken();
     }
 
+    public void increaseTab() {
+        tab++;
+    }
+
+    public void decreaseTab() {
+        tab--;
+    }
+
+    public void printTabs() {
+        for (int i = 0; i < tab; i++) {
+            System.out.print("\t");
+        }
+    }
 
 }

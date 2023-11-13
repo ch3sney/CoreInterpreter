@@ -11,9 +11,13 @@ public class In {
         }
         idList = new IdentifierList();
         idList.parse();
+        if (Interpreter.tok.getToken() == 12) {
+            Interpreter.tok.skipToken();
+        }
     }
 
     public void print() {
+        Interpreter.tok.printTabs();
         System.out.print("read ");
         idList.print();
         System.out.print(";\n");

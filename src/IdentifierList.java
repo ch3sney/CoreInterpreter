@@ -8,12 +8,9 @@ public class IdentifierList {
 
     public void parse() {
         id = new Identifier();
-        System.out.print("me");
         id.parse(Interpreter.tok.idName());
         Interpreter.tok.skipToken();
-        System.out.println("ow");
         if (Interpreter.tok.getToken() == 13) {
-            System.out.println("comma");
             Interpreter.tok.skipToken();
             idList = new IdentifierList();
             idList.parse();
@@ -28,13 +25,16 @@ public class IdentifierList {
         }
     }
 
-    public void execute() {
-        // No-op
+    public String execute() {
+        if (idList == null) {
+            return id.getName();
+        } else {
+            return id.getName() + '~' + idList.execute();
+        }
     }
 
     public void setValues(boolean initialize) {
         if (initialize) {
-            System.out.println("init");
             if (Interpreter.tok.hasId(id.getName())) {
                 System.err.println("Error: ID in list was already initialized.");
                 System.exit(1);

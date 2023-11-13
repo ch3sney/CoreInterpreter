@@ -47,7 +47,7 @@ public class Tokenizer {
         return idMap.get(name);
     }
 
-    public void setIdValue(String name, int value) {
+    public void setIdValue(String name, Integer value) {
         idMap.put(name, value);
     }
 

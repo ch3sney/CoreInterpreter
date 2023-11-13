@@ -238,7 +238,7 @@ class Scanner {
             return tokens.get(cursorIndex).content;
             //If token is not an identifier print error message
         } else {
-            System.err.println("Error: Current token is not an identifier.");
+            System.err.println("Error: Current token is not an identifier. id=" + Interpreter.tok.getToken());
             System.exit(1);
             return null; //This line will never be reached, added for compilation
         }

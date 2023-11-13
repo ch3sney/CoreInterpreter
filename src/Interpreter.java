@@ -7,5 +7,7 @@ public class Interpreter {
         tok = new Tokenizer("./data/test.txt", "./data/testData.txt");
         Program p = new Program();
         p.parse();
+        p.print();
+        p.execute();
     }
 }

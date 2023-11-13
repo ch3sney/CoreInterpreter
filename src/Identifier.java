@@ -8,24 +8,8 @@ public class Identifier {
     }
 
     public void parse(String idString) {
-        int len = idString.length();
-        if (len == 1) {
-            this.letter = new Letter();
-            letter.parse(idString);
-            this.name = letter.getVal();
-        } else if (Character.isAlphabetic(idString.charAt(len - 1))) {
-            this.letter = new Letter();
-            letter.parse(idString.substring(len - 1));
-            this.id = new Identifier();
-            id.parse(idString.substring(0, len - 1));
-            this.name = id.getName() + letter.getVal();
-        } else if (Character.isDigit(idString.charAt(len - 1))) {
-            this.digit = new Digit();
-            digit.parse(idString.substring(len - 1));
-            this.id = new Identifier();
-            id.parse(idString.substring(0, len - 1));
-            this.name = id.getName() + digit.getVal();
-        }
+        name = idString;
+        //Interpreter.tok.skipToken();
     }
 
     public void print() {
@@ -40,7 +24,7 @@ public class Identifier {
         return this.name;
     }
 
-    public void setValue(int val) {
+    public void setValue(Integer val) {
         if (Interpreter.tok.hasId(this.name)) {
             Interpreter.tok.setIdValue(this.name, val);
         } else {
@@ -51,6 +35,7 @@ public class Identifier {
 
     public Integer getValue() {
         if (Interpreter.tok.hasId(this.name) && Interpreter.tok.getIdValue(this.name) != null) {
+            System.out.print("getVal");
             return Interpreter.tok.getIdValue(name);
         } else {
             System.err.println("Error: Identifier value not initialized or does not exist.");

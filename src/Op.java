@@ -1,32 +1,34 @@
 public class Op {
-    private DigitSeq dig;
+    private Integer dig;
     private Identifier id;
     private Expression exp;
 
     public void parse() {
         if (Interpreter.tok.getToken() == 31) {
-            this.dig = new DigitSeq();
-            dig.parse(Integer.toString(Interpreter.tok.intVal()));
+            System.out.println("int");
+            this.dig = Interpreter.tok.intVal();
             Interpreter.tok.skipToken();
         } else if (Interpreter.tok.getToken() == 32) {
+            System.out.println("id");
             this.id = new Identifier();
             id.parse(Interpreter.tok.idName());
             Interpreter.tok.skipToken();
         } else if (Interpreter.tok.getToken() == 20) {
+            System.out.println("exp");
             Interpreter.tok.skipToken();
             this.exp = new Expression();
             exp.parse();
             if (Interpreter.tok.getToken() == 21) {
                 Interpreter.tok.skipToken();
             } else {
-                System.err.println("Error: Missing closing parenthesis.");
+                System.err.println("Error: Missing closing parenthesis. id=" + Interpreter.tok.getToken());
             }
         }
     }
 
     public void print() {
         if (dig != null) {
-            dig.print();
+            System.out.print(dig);
         } else if (id != null) {
             id.print();
         } else if (exp != null) {
@@ -38,7 +40,7 @@ public class Op {
 
     public int execute() {
         if (dig != null) {
-            return dig.execute();
+            return dig;
         } else if (id != null) {
             return id.execute();
         } else {

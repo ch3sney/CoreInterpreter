@@ -5,11 +5,31 @@ public class Identifier {
     public Identifier() {
     }
 
-    public void parse(String idString, boolean decl) {
+    public void parse(String idString, char type) {
         name = idString;
-
-        System.out.println("add id, " + name + ". decl = " + decl);
-        System.out.println(Interpreter.tok.idMap.toString());
+        //System.out.println("access type = " + type + ". id = " + idString + ". idMap = " + Interpreter.tok.idMap);
+        switch (type) {
+            case 'd':
+                if (!Interpreter.tok.hasIdParse(name)) {
+                    Interpreter.tok.setIdParseValue(name, 'd');
+                } else {
+                    System.err.println("Error: Identifier was declared twice.");
+                    System.exit(1);
+                }
+                break;
+            case 'i':
+                if (Interpreter.tok.hasIdParse(name)) {
+                    Interpreter.tok.setIdParseValue(name, 'i');
+                } else {
+                    System.err.println("Error: Identifier was initialized before being declared.");
+                    System.exit(1);
+                }
+            case 'a':
+                if (!Interpreter.tok.hasIdParse(name) || Interpreter.tok.getIdParseValue(name) == 'd') {
+                    System.err.println("Error: Identifier was accessed before being declared and/or initialized.");
+                    System.exit(1);
+                }
+        }
     }
 
     public void print() {
@@ -24,22 +44,15 @@ public class Identifier {
         return this.name;
     }
 
+    private void declareId() {
+        Interpreter.tok.setIdValue(this.name, null);
+    }
+
     public void setValue(Integer val) {
-        if (Interpreter.tok.hasId(this.name)) {
-            Interpreter.tok.setIdValue(this.name, val);
-        } else {
-            System.err.println("Error: Identifier is not declared.");
-            System.exit(1);
-        }
+        Interpreter.tok.setIdValue(this.name, val);
     }
 
     public Integer getValue() {
-        if (Interpreter.tok.hasId(this.name) && Interpreter.tok.getIdValue(this.name) != null) {
-            return Interpreter.tok.getIdValue(name);
-        } else {
-            System.err.println("Error: Identifier value not initialized or does not exist.");
-            System.exit(1);
-            return 0;
-        }
+        return Interpreter.tok.getIdValue(name);
     }
 }

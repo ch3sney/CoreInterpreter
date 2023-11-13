@@ -9,7 +9,7 @@ public class Op {
             Interpreter.tok.skipToken();
         } else if (Interpreter.tok.getToken() == 32) {
             this.id = new Identifier();
-            id.parse(Interpreter.tok.idName(), false);
+            id.parse(Interpreter.tok.idName(), 'a');
             Interpreter.tok.skipToken();
         } else if (Interpreter.tok.getToken() == 20) {
             Interpreter.tok.skipToken();

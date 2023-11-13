@@ -6,14 +6,14 @@ public class IdentifierList {
 
     }
 
-    public void parse(boolean decl) {
+    public void parse(char type) {
         id = new Identifier();
-        id.parse(Interpreter.tok.idName(), decl);
+        id.parse(Interpreter.tok.idName(), type);
         Interpreter.tok.skipToken();
         if (Interpreter.tok.getToken() == 13) {
             Interpreter.tok.skipToken();
             idList = new IdentifierList();
-            idList.parse(decl);
+            idList.parse(type);
         }
     }
 
@@ -35,12 +35,7 @@ public class IdentifierList {
 
     public void setValues(boolean initialize) {
         if (initialize) {
-            if (Interpreter.tok.hasId(id.getName())) {
-                System.err.println("Error: ID in list was already initialized.");
-                System.exit(1);
-            } else {
-                Interpreter.tok.setIdValue(id.getName(), null);
-            }
+            Interpreter.tok.setIdValue(id.getName(), null);
             if (idList != null) {
                 idList.setValues(true);
             }

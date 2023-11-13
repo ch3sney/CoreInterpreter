@@ -12,6 +12,7 @@ public class Tokenizer {
     private final Scanner scanner;
     // FIX ME vv
     public final HashMap<String, Integer> idMap;
+    public HashMap<String, Character> idParse;
     private Queue<Integer> dataQueue;
     private int tab = 0;
 
@@ -35,7 +36,9 @@ public class Tokenizer {
     public Tokenizer(String codePath, String dataPath) throws IOException {
         readData(dataPath);
         scanner = new Scanner(codePath);
+        idParse = new HashMap<>();
         idMap = new HashMap<>();
+
     }
 
     public int intVal() {
@@ -50,12 +53,24 @@ public class Tokenizer {
         return idMap.get(name);
     }
 
+    public Character getIdParseValue(String name) {
+        return idParse.get(name);
+    }
+
     public void setIdValue(String name, Integer value) {
         idMap.put(name, value);
     }
 
+    public void setIdParseValue(String name, Character value) {
+        idParse.put(name, value);
+    }
+
     public boolean hasId(String name) {
         return idMap.containsKey(name);
+    }
+
+    public boolean hasIdParse(String name) {
+        return idParse.containsKey(name);
     }
 
     public void skipData() {

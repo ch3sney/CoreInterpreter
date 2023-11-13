@@ -10,7 +10,7 @@ public class In {
             Interpreter.tok.skipToken();
         }
         idList = new IdentifierList();
-        idList.parse(false);
+        idList.parse('i');
         if (Interpreter.tok.getToken() == 12) {
             Interpreter.tok.skipToken();
         }

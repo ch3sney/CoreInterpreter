@@ -1,6 +1,6 @@
 # CoreInterpreter
 
-Hello! Running my program should be pretty simple. Simply run the following commands from the src folder:
+Hello! Running my program should be pretty simple. Simply run the following commands from the **src** folder:
 
 ```
 > javac Interpreter.java

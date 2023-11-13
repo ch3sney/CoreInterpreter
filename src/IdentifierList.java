@@ -6,14 +6,14 @@ public class IdentifierList {
 
     }
 
-    public void parse() {
+    public void parse(boolean decl) {
         id = new Identifier();
-        id.parse(Interpreter.tok.idName());
+        id.parse(Interpreter.tok.idName(), decl);
         Interpreter.tok.skipToken();
         if (Interpreter.tok.getToken() == 13) {
             Interpreter.tok.skipToken();
             idList = new IdentifierList();
-            idList.parse();
+            idList.parse(decl);
         }
     }
 

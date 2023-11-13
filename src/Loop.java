@@ -9,12 +9,18 @@ public class Loop {
     public void parse() {
         if (Interpreter.tok.getToken() == 8) {
             Interpreter.tok.skipToken();
+        } else {
+            System.err.println("Error: Expected 'while' token. id = " + Interpreter.tok.getToken());
+            System.exit(1);
         }
         cond = new Condition();
         cond.parse();
 
         if (Interpreter.tok.getToken() == 9) {
             Interpreter.tok.skipToken();
+        } else {
+            System.err.println("Error: Expected 'loop' token. id = " + Interpreter.tok.getToken());
+            System.exit(1);
         }
 
         ss = new StatementSeq();
@@ -22,10 +28,16 @@ public class Loop {
 
         if (Interpreter.tok.getToken() == 3) {
             Interpreter.tok.skipToken();
+        } else {
+            System.err.println("Error: Expected 'end' token. id = " + Interpreter.tok.getToken());
+            System.exit(1);
         }
 
         if (Interpreter.tok.getToken() == 12) {
             Interpreter.tok.skipToken();
+        } else {
+            System.err.println("Error: Expected ';' token. id = " + Interpreter.tok.getToken());
+            System.exit(1);
         }
     }
 

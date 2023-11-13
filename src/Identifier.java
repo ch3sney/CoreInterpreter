@@ -5,8 +5,11 @@ public class Identifier {
     public Identifier() {
     }
 
-    public void parse(String idString) {
+    public void parse(String idString, boolean decl) {
         name = idString;
+
+        System.out.println("add id, " + name + ". decl = " + decl);
+        System.out.println(Interpreter.tok.idMap.toString());
     }
 
     public void print() {

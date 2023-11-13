@@ -8,7 +8,7 @@ public class Assign {
 
     public void parse() {
         id = new Identifier();
-        id.parse(Interpreter.tok.idName());
+        id.parse(Interpreter.tok.idName(), false);
         Interpreter.tok.skipToken();
         if (Interpreter.tok.getToken() == 14) {
             Interpreter.tok.skipToken();

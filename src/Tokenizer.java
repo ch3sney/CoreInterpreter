@@ -9,8 +9,9 @@ import java.util.Queue;
 
 public class Tokenizer {
     public Tokenizer tok;
-    private Scanner scanner;
-    private HashMap<String, Integer> idMap;
+    private final Scanner scanner;
+    // FIX ME vv
+    public final HashMap<String, Integer> idMap;
     private Queue<Integer> dataQueue;
     private int tab = 0;
 
@@ -70,7 +71,7 @@ public class Tokenizer {
         if (!dataQueue.isEmpty()) {
             return dataQueue.peek();
         } else {
-            System.err.println("Reached end of data stream.");
+            System.err.println("Error: Reached end of data stream.");
             System.exit(1);
             return 0;
         }

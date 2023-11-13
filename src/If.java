@@ -10,11 +10,17 @@ public class If {
     public void parse() {
         if (Interpreter.tok.getToken() == 5) {
             Interpreter.tok.skipToken();
+        } else {
+            System.err.println("Error: Expected 'if' token. id = " + Interpreter.tok.getToken());
+            System.exit(1);
         }
         cond = new Condition();
         cond.parse();
         if (Interpreter.tok.getToken() == 6) {
             Interpreter.tok.skipToken();
+        } else {
+            System.err.println("Error: Expected 'then' token. id = " + Interpreter.tok.getToken());
+            System.exit(1);
         }
         ss1 = new StatementSeq();
         ss1.parse();
@@ -26,13 +32,22 @@ public class If {
 
             if (Interpreter.tok.getToken() == 3) {
                 Interpreter.tok.skipToken();
+            } else {
+                System.err.println("Error: Expected 'end' token. id = " + Interpreter.tok.getToken());
+                System.exit(1);
             }
         } else if (Interpreter.tok.getToken() == 3) {
             Interpreter.tok.skipToken();
+        } else {
+            System.err.println("Error: Expected 'end' or 'else' token. id = " + Interpreter.tok.getToken());
+            System.exit(1);
         }
 
         if (Interpreter.tok.getToken() == 12) {
             Interpreter.tok.skipToken();
+        } else {
+            System.err.println("Error: Expected ';' token. id = " + Interpreter.tok.getToken());
+            System.exit(1);
         }
     }
 

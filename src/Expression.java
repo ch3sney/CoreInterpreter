@@ -8,6 +8,7 @@ public class Expression {
     }
 
     public void parse() {
+        // Expression parsing. Accounts for '+' and '-' alternatives
         this.factor = new Factor();
         factor.parse();
         if (Interpreter.tok.getToken() == 22) {

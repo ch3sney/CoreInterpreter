@@ -8,8 +8,12 @@ public class Comparator {
     }
 
     public void parse() {
+        // Comparator wraps two ops and a comp op into a single BNF item.
         if (Interpreter.tok.getToken() == 20) {
             Interpreter.tok.skipToken();
+        } else {
+            System.err.println("Error: Expected '(' token. id = " + Interpreter.tok.getToken());
+            System.exit(1);
         }
         this.left = new Op();
         left.parse();
@@ -45,6 +49,9 @@ public class Comparator {
 
         if (Interpreter.tok.getToken() == 21) {
             Interpreter.tok.skipToken();
+        } else {
+            System.err.println("Error: Expected ')' token. id = " + Interpreter.tok.getToken());
+            System.exit(1);
         }
 
     }

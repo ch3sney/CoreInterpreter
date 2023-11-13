@@ -7,9 +7,10 @@ public class Identifier {
 
     public void parse(String idString, char type) {
         name = idString;
-        //System.out.println("access type = " + type + ". id = " + idString + ". idMap = " + Interpreter.tok.idMap);
+        // Switch statement for different 'types' of id parsing.
         switch (type) {
             case 'd':
+                // Declaration. ID should not exist yet.
                 if (!Interpreter.tok.hasIdParse(name)) {
                     Interpreter.tok.setIdParseValue(name, 'd');
                 } else {
@@ -18,6 +19,7 @@ public class Identifier {
                 }
                 break;
             case 'i':
+                // Initialization. ID should exist.
                 if (Interpreter.tok.hasIdParse(name)) {
                     Interpreter.tok.setIdParseValue(name, 'i');
                 } else {
@@ -25,6 +27,7 @@ public class Identifier {
                     System.exit(1);
                 }
             case 'a':
+                // Access. ID should exist and be initialized.
                 if (!Interpreter.tok.hasIdParse(name) || Interpreter.tok.getIdParseValue(name) == 'd') {
                     System.err.println("Error: Identifier was accessed before being declared and/or initialized.");
                     System.exit(1);
@@ -49,6 +52,7 @@ public class Identifier {
     }
 
     public void setValue(Integer val) {
+        // set and get methods do not require error checking as this was done during parse
         Interpreter.tok.setIdValue(this.name, val);
     }
 

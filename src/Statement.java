@@ -11,6 +11,7 @@ public class Statement {
     }
 
     public void parse() {
+        // Parse statement. Accounts for different alternatives and checks for invalid statement.
         switch (Interpreter.tok.getToken()) {
             case (5):
                 ifStmt = new If();
@@ -28,10 +29,15 @@ public class Statement {
                 out = new Out();
                 out.parse();
                 break;
-            default:
+            case (32):
                 assign = new Assign();
                 assign.parse();
                 break;
+            default:
+                System.err.println("Error: Invalid statement. id = " + Interpreter.tok.getToken());
+                System.exit(1);
+                break;
+
         }
     }
 

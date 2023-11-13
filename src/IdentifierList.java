@@ -7,6 +7,7 @@ public class IdentifierList {
     }
 
     public void parse(char type) {
+        // Parse identifier. Takes a 'type' param to specify if declaring, assigning, or accessing.
         id = new Identifier();
         id.parse(Interpreter.tok.idName(), type);
         Interpreter.tok.skipToken();
@@ -26,6 +27,7 @@ public class IdentifierList {
     }
 
     public String execute() {
+        // Essentially a get method. This is used for write calls.
         if (idList == null) {
             return id.getName();
         } else {
@@ -34,6 +36,7 @@ public class IdentifierList {
     }
 
     public void setValues(boolean initialize) {
+        // Set does not require error checking as this was done during parse.
         if (initialize) {
             Interpreter.tok.setIdValue(id.getName(), null);
             if (idList != null) {

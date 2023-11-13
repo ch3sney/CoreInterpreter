@@ -6,6 +6,7 @@ public class Factor {
     }
 
     public void parse() {
+        // Factor parse. Simple!
         this.op = new Op();
         op.parse();
         if (Interpreter.tok.getToken() == 24) {

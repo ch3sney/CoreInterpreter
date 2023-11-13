@@ -7,16 +7,23 @@ public class Assign {
     }
 
     public void parse() {
+        // Assign parsing. Checks for id, '=', and expression.
         id = new Identifier();
         id.parse(Interpreter.tok.idName(), 'i');
         Interpreter.tok.skipToken();
         if (Interpreter.tok.getToken() == 14) {
             Interpreter.tok.skipToken();
+        } else {
+            System.err.println("Error: Expected '=' token. id = " + Interpreter.tok.getToken());
+            System.exit(1);
         }
         exp = new Expression();
         exp.parse();
         if (Interpreter.tok.getToken() == 12) {
             Interpreter.tok.skipToken();
+        } else {
+            System.err.println("Error: Expected ';' token. id = " + Interpreter.tok.getToken());
+            System.exit(1);
         }
     }
 

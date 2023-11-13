@@ -10,6 +10,7 @@ public class Condition {
     }
 
     public void parse() {
+        // Checks for different condition alternatives.
         if (Interpreter.tok.getToken() == 15) {
             Interpreter.tok.skipToken();
             boolean not = true;

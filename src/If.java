@@ -8,6 +8,7 @@ public class If {
     }
 
     public void parse() {
+        // If parsing. Looks complicated, but just lots of checking for correct syntax and two alternatives.
         if (Interpreter.tok.getToken() == 5) {
             Interpreter.tok.skipToken();
         } else {
@@ -52,6 +53,7 @@ public class If {
     }
 
     public void print() {
+        // If printing. Accounts for two alternatives.
         Interpreter.tok.printTabs();
         System.out.print("if (");
         cond.print();

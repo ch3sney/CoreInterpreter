@@ -8,14 +8,21 @@ public class Out {
     }
 
     public void parse() {
+        // Out parsing.
         if (Interpreter.tok.getToken() == 11) {
             Interpreter.tok.skipToken();
+        } else {
+            System.err.println("Error: Expected 'write' token. id = " + Interpreter.tok.getToken());
+            System.exit(1);
         }
         idList = new IdentifierList();
         idList.parse('a');
 
         if (Interpreter.tok.getToken() == 12) {
             Interpreter.tok.skipToken();
+        } else {
+            System.err.println("Error: Expected ';' token. id = " + Interpreter.tok.getToken());
+            System.exit(1);
         }
     }
 

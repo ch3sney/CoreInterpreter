@@ -7,6 +7,7 @@ public class Loop {
     }
 
     public void parse() {
+        // Loop parsing. Looks complicated, but just checking syntax!
         if (Interpreter.tok.getToken() == 8) {
             Interpreter.tok.skipToken();
         } else {

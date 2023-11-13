@@ -9,6 +9,7 @@ public class StatementSeq {
     }
 
     public void parse() {
+        // Parse sequence of statements until 'end' or 'else' token is encountered.
         stmt = new Statement();
         stmt.parse();
         if (Interpreter.tok.getToken() == 3 || Interpreter.tok.getToken() == 7) {

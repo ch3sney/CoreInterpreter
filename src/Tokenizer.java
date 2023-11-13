@@ -1,22 +1,31 @@
 import java.io.BufferedReader;
-import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
-import java.nio.Buffer;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Queue;
 
 public class Tokenizer {
+    // Public tokenizer accessed by all other classes
     public Tokenizer tok;
+
+    // Scanner variable. I opted to create tokenizer to encapsulate the behavior of scanner.
     private final Scanner scanner;
-    // FIX ME vv
-    public final HashMap<String, Integer> idMap;
-    public HashMap<String, Character> idParse;
+
+    // Map of ids accessed at execution
+    private final HashMap<String, Integer> idMap;
+
+    // Map of ids accessed during parse
+    private final HashMap<String, Character> idParse;
+
+    // Queue of data read from file
     private Queue<Integer> dataQueue;
+
+    // Used to store current tab amount
     private int tab = 0;
 
     private void readData(String dataPath) {
+        // Reads all data and stores in file. I opted to read all at once versus in real-time :)
         dataQueue = new LinkedList<>();
         try (BufferedReader reader = new BufferedReader(new FileReader(dataPath))) {
             String line;
@@ -34,12 +43,38 @@ public class Tokenizer {
     }
 
     public Tokenizer(String codePath, String dataPath) throws IOException {
+        // Constructor
         readData(dataPath);
         scanner = new Scanner(codePath);
         idParse = new HashMap<>();
         idMap = new HashMap<>();
 
     }
+
+
+    public void skipData() {
+        if (!dataQueue.isEmpty()) {
+            dataQueue.remove();
+        } else {
+            System.err.println("Error: Reached end of data stream.");
+            System.exit(1);
+        }
+    }
+
+    public int getData() {
+        if (!dataQueue.isEmpty()) {
+            return dataQueue.peek();
+        } else {
+            System.err.println("Error: Reached end of data stream.");
+            System.exit(1);
+            return 0;
+        }
+
+    }
+
+    /*
+     *  The below methods are encapsulating the scanner or id maps for easy use in other classes.
+     */
 
     public int intVal() {
         return scanner.intVal();
@@ -73,26 +108,6 @@ public class Tokenizer {
         return idParse.containsKey(name);
     }
 
-    public void skipData() {
-        if (!dataQueue.isEmpty()) {
-            dataQueue.remove();
-        } else {
-            System.err.println("Reached end of data stream.");
-            System.exit(1);
-        }
-    }
-
-    public int getData() {
-        if (!dataQueue.isEmpty()) {
-            return dataQueue.peek();
-        } else {
-            System.err.println("Error: Reached end of data stream.");
-            System.exit(1);
-            return 0;
-        }
-
-    }
-
     public void skipToken() {
         try {
             scanner.skipToken();
@@ -108,6 +123,10 @@ public class Tokenizer {
     public boolean compareToken(int token) {
         return token == scanner.getToken();
     }
+
+    /*
+     *  Standardized methods for printing tabs.
+     */
 
     public void increaseTab() {
         tab++;

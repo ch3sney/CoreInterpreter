@@ -6,6 +6,10 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+/*
+ *  Opted to use scanner provided by professor to limit number of variables :)
+ */
+
 //Define a class named CoreScanner to tokenize a file into a list of tokens based on CORE language
 class Scanner {
     //List to hold the tokens extracted from the file

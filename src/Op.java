@@ -4,6 +4,7 @@ public class Op {
     private Expression exp;
 
     public void parse() {
+        // Op parsing. Accounts for three alternatives of op.
         if (Interpreter.tok.getToken() == 31) {
             this.dig = Interpreter.tok.intVal();
             Interpreter.tok.skipToken();
@@ -18,7 +19,7 @@ public class Op {
             if (Interpreter.tok.getToken() == 21) {
                 Interpreter.tok.skipToken();
             } else {
-                System.err.println("Error: Missing closing parenthesis. id=" + Interpreter.tok.getToken());
+                System.err.println("Error: Missing closing parenthesis. id = " + Interpreter.tok.getToken());
             }
         }
     }

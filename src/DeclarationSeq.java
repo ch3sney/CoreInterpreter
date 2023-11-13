@@ -13,6 +13,9 @@ public class DeclarationSeq {
 
         if (Interpreter.tok.getToken() == 2) {
             return;
+        } else {
+            System.err.println("Error: Expected 'begin' token. id = " + Interpreter.tok.getToken());
+            System.exit(1);
         }
         Interpreter.tok.skipToken();
 
